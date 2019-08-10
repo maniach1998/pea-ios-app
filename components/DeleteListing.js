@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Text, View, StyleSheet, AppRegistry, Image} from 'react-native';
 import { NativeRouter, Link, Route } from 'react-router-native';
+import Listings from './Listings';
+
 export default class DeleteListing extends Component {
     render(){
         return (
@@ -23,7 +25,10 @@ export default class DeleteListing extends Component {
                     <Text>Select Listing To Be Deleted :</Text>
                </View>
 
+                <View>
+                    <Listings />
                </View>  
+            </View>
             </View>
 
         );

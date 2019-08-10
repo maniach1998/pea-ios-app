@@ -1,11 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Text, View, StyleSheet, AppRegistry, Image, Button, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { NativeRouter } from "react-router-native";
 import Dialog, { DialogContent, SlideAnimation, ScaleAnimation, DialogFooter, DialogButton } from 'react-native-popup-dialog';
+import { connect } from 'react-redux';
+import { setNeedFilter, setListingTypeFilter, setPriceFilter } from '../actions/filters';
 import CheckboxFormX from 'react-native-checkbox-form';
 const DownArrow = require('../icons/down-arrow.png');
 
-export default class Filters extends Component {
+export class Filters extends Component {
 
     constructor(props) {
         super(props);
@@ -15,7 +17,10 @@ export default class Filters extends Component {
             typeVisible: false,
             priceVisible: false,
             carpetVisible: false,
-            value: 50,
+            checkedItems: [],
+            need: [],
+            listingType: [],
+            priceRange: [0, Infinity],
         };
     }
 
@@ -46,21 +51,25 @@ export default class Filters extends Component {
     ];
     
     needData = [
-        {label: 'Buy',
-         value: 'Buy',
-         RNchecked : false,
+        {
+            label: 'Buy',
+            value: 'Buy',
+            RNchecked : false,
         },
-        {label: 'Sell',
-        value: 'Sell',
-        RNchecked : false,
+        {
+            label: 'Sell',
+            value: 'Sell',
+            RNchecked : false,
        },
-       {label: 'Rent Enquiry',
-         value: 'Rent Enquiry',
-         RNchecked : false,
+       {
+           label: 'Rent Enquiry',
+            value: 'Rent Enquiry',
+            RNchecked : false,
         },
-        {label: 'Available for Rent',
-         value: 'Available for Rent',
-         RNchecked : false,
+        {
+            label: 'Available for Rent',
+            value: 'Available for Rent',
+            RNchecked : false,
         },
 
     ];
@@ -68,35 +77,35 @@ export default class Filters extends Component {
     typeData = [
         {
             label: '1 RK',
-            value: 'one rk',
+            value: '1RK',
             RNchecked : false,
 
         },
         {
             label: '1 BHK',
-            value: 'one bhk',
+            value: '1BHK',
             RNchecked : false,
         },
         {
             label: '2 BHK',
-            value: 'two bhk',
+            value: '2BHK',
             RNchecked : false,
 
         },
         {
             label: '2 & 1/2 BHK',
-            value: 'two and half BHK',
+            value: '2.5BHK',
             RNchecked : false,
         },
 
         {
             label: '3 BHK',
-            value: 'three bhk',
+            value: '3BHK',
             RNchecked : false,
         },
         {
             label: '4 BHK',
-            value: 'four bhk',
+            value: '4BHK',
             RNchecked : false,
         },
         {
@@ -129,38 +138,38 @@ export default class Filters extends Component {
     priceRentData = [
         {
             label: 'upto 15K',
-            value: '15k',
+            value: [0, 15000],
             RNchecked : false,
         },
         {
             label: '15K - 20K',
-            value: '15k - 20K',
+            value: [15000, 20000],
             RNchecked : false,
         },
         {
             label: '20K - 30K',
-            value: '20k - 30K',
+            value: [20000, 30000],
             RNchecked : false,
         },
         {
             label: '30K - 50K',
-            value: '30k - 50K',
+            value: [30000, 50000],
             RNchecked : false,
         },
 
         {
             label: '55K - 65K',
-            value: '55k - 65K',
+            value: [55000, 65000],
             RNchecked : false,
         },
         {
             label: '65K - 90K',
-            value: '65k - 90K',
+            value: [65000, 90000],
             RNchecked : false,
         },
         {
             label: 'above 90K',
-            value: '90K',
+            value: [90000, Infinity],
             RNchecked : false,
         },
     ];
@@ -168,60 +177,120 @@ export default class Filters extends Component {
     priceOutrightData = [
         {
             label: 'upto 45L',
-            value: '45L',
+            value: [0, 4500000],
             RNchecked : false,
         },
         {
             label: '45L - 70L',
-            value: '45L - 70L',
+            value: [4500000, 7000000],
             RNchecked : false,
         },
         {
             label: '70L - 80L',
-            value: '70L - 80L',
+            value: [7000000, 8000000],
             RNchecked : false,
         },
         {
             label: '80L - 1.15Cr',
-            value: '80L - 1.15Cr',
+            value: [8000000, 11500000],
             RNchecked : false,
         },
 
         {
             label: '1.15Cr - 1.60Cr',
-            value: '1.15Cr - 1.60Cr',
+            value: [11500000, 16000000],
             RNchecked : false,
         },
         {
             label: '1.60Cr - 1.9Cr',
-            value: '1.60Cr - 1.9Cr',
+            value: [16000000, 19000000],
             RNchecked : false,
         },
         {
             label: '1.9Cr -  3.5Cr',
-            value: '1.9Cr - 3.5Cr',
+            value: [19000000, 35000000],
             RNchecked : false,
         },
         {
             label: '3.5Cr - 5Cr',
-            value: '3.5Cr - 5Cr',
+            value: [35000000, 50000000],
             RNchecked : false,
         },
         {
             label: '5Cr - 8Cr',
-            value: '5Cr - 8Cr',
+            value: [50000000, 80000000],
             RNchecked : false,
         },
         {
             label: '8Cr Above',
-            value: '8Cr Above',
+            value: [80000000, 100000000000],
             RNchecked : false,
         },
         
     ];
+
+    priceSelectAll = [
+        {
+            label: 'Select all',
+            value: [0, Infinity],
+            RNchecked: true,
+        }
+    ];
+
     _onSelect = ( item ) => {
-        console.log(item);
-      };
+        checkedItems = [];
+
+        item.map((child) => {
+            if (child.RNchecked === true) {
+                checkedItems.push(child.label);
+            }
+        });
+
+        this.setState({ checkedItems });
+    };
+
+    _onNeedSelect = ( item ) => {
+        needCheckedItems = [];
+
+        item.map((child) => {
+            if (child.RNchecked === true) {
+                needCheckedItems.push(child.label);
+            }
+        });
+
+        this.setState({ need: [...needCheckedItems] });
+
+        this.props.dispatch(setNeedFilter(needCheckedItems));
+    };
+
+    _onTypeSelect = ( item ) => {
+        typeCheckedItems = [];
+
+        item.map((child) => {
+            if (child.RNchecked === true) {
+                typeCheckedItems.push(child.value);
+            }
+        });
+
+        this.setState({ listingType: [...typeCheckedItems] });
+
+        this.props.dispatch(setListingTypeFilter(typeCheckedItems));
+    };
+
+    _onPriceSelect = ( item ) => {
+        priceCheckedItems = [];
+
+        item.map((child) => {
+            if (child.RNchecked === true) {
+                priceCheckedItems.push(child.value);
+            }
+        });
+
+        priceCheckedItems = priceCheckedItems.toString().split(',')
+        let priceRange = [parseInt(priceCheckedItems[0]), parseInt(priceCheckedItems[priceCheckedItems.length - 1])];
+        this.setState({ priceRange });
+        this.props.dispatch(setPriceFilter(priceRange));
+    };
 
     render() {
         return(
@@ -229,7 +298,8 @@ export default class Filters extends Component {
                 <View>
                     <View style = {styles.Container}>
                         <View style = {styles.listText}>
-                            <Text style = {{fontSize:20}}>  Your Listings </Text>
+                            <Text style = {{ fontSize:20 }}>Your Listings</Text>
+                            <Text style = {{ color: '#777' }}>({this.props.listings.length})</Text>
                         </View>
 
                         {/* Filter button */}
@@ -272,7 +342,7 @@ export default class Filters extends Component {
                                             <View style = {styles.DialogOpt}>
                                                 <CheckboxFormX 
                                                 dataSource={this.filterData}
-                                                style = {{ padding: 5, margin: 0 , fontSize : 50}}
+                                                style = {{ padding: 5, margin: 0 , fontSize : 50 }}
                                                 itemShowKey="label"
                                                 itemCheckedKey="RNchecked"
                                                 iconSize={27}
@@ -285,6 +355,7 @@ export default class Filters extends Component {
 
                                             <View style = {styles.DialogDropdown}>
                                             <TouchableHighlight
+                                            disabled={this.state.checkedItems.includes('Need') ? false : true}
                                             underlayColor='none'
                                             onPress = {() => {
                                                 this.setState({ needVisible: true });
@@ -297,10 +368,19 @@ export default class Filters extends Component {
                                                 footer={
                                                     <DialogFooter>
                                                       <DialogButton
-                                                        text="APPLY"
+                                                        text="CLEAR"
                                                         textStyle={{ color: '#C94343' }}
                                                         onPress={() => {
-                                                            this.setState({ needVisible: false });
+                                                            const clearedData = this.needData.map((child) => {
+                                                                return {
+                                                                    ...child,
+                                                                    RNchecked: false
+                                                                };
+                                                            });
+
+                                                            this.needData = [...clearedData];
+
+                                                            this._onNeedSelect(this.needData);
                                                         }}
                                                       />
                                                     </DialogFooter>
@@ -324,7 +404,7 @@ export default class Filters extends Component {
                                                             iconColor='#CC4F4F'
                                                             formHorizontal={false}
                                                             labelHorizontal={true}
-                                                            onChecked={(item) => this._onSelect(item)}
+                                                            onChecked={(item) => this._onNeedSelect(item)}
                                                             />
                                                         </View>
                                                         </View>
@@ -333,6 +413,7 @@ export default class Filters extends Component {
 
                                             <TouchableHighlight
                                             underlayColor='none'
+                                            disabled={this.state.checkedItems.includes('Type') ? false : true}
                                             onPress = {() => {
                                                 this.setState({ typeVisible: true });
                                             }}>
@@ -344,10 +425,19 @@ export default class Filters extends Component {
                                                 footer={
                                                     <DialogFooter>
                                                       <DialogButton
-                                                        text="APPLY"
+                                                        text="CLEAR"
                                                         textStyle={{ color: '#C94343' }}
                                                         onPress={() => {
-                                                            this.setState({ typeVisible: false });
+                                                            const clearedData = this.typeData.map((child) => {
+                                                                return {
+                                                                    ...child,
+                                                                    RNchecked: false
+                                                                };
+                                                            });
+
+                                                            this.typeData = [...clearedData];
+
+                                                            this._onTypeSelect(this.typeData);
                                                         }}
                                                       />
                                                     </DialogFooter>
@@ -371,7 +461,7 @@ export default class Filters extends Component {
                                                             iconColor='#CC4F4F'
                                                             formHorizontal={false}
                                                             labelHorizontal={true}
-                                                            onChecked={(item) => this._onSelect(item)}
+                                                            onChecked={(item) => this._onTypeSelect(item)}
                                                             />
                                                         </View>
                                                         </View>
@@ -380,6 +470,7 @@ export default class Filters extends Component {
 
                                             <TouchableHighlight
                                             underlayColor='none'
+                                            disabled={this.state.checkedItems.includes('Price') ? false : true}
                                             onPress = {() => {
                                                 this.setState({ priceVisible: true });
                                             }}>
@@ -390,10 +481,29 @@ export default class Filters extends Component {
                                                 footer={
                                                     <DialogFooter>
                                                       <DialogButton
-                                                        text="APPLY"
+                                                        text="CLEAR"
                                                         textStyle={{ color: '#C94343' }}
                                                         onPress={() => {
-                                                            this.setState({ priceVisible: false });
+                                                            let clearedData = this.priceRentData.map((child) => {
+                                                                return {
+                                                                    ...child,
+                                                                    RNchecked: false
+                                                                };
+                                                            });
+                                                            this.priceRentData = [...clearedData];
+                                                            this._onPriceSelect(this.priceRentData);
+
+                                                            clearedData = this.priceOutrightData.map((child) => {
+                                                                return {
+                                                                    ...child,
+                                                                    RNchecked: false
+                                                                };
+                                                            });
+                                                            this.priceOutrightData = [...clearedData];
+                                                            this._onPriceSelect(this.priceOutrightData);
+
+                                                            this.setState({ priceRange: [0, Infinity] });
+                                                            this.props.dispatch(setPriceFilter([0, Infinity]));
                                                         }}
                                                       />
                                                     </DialogFooter>
@@ -411,31 +521,30 @@ export default class Filters extends Component {
                                                             <Text style = {{ fontSize: 20, marginTop: 10, marginBottom: 10 }}>Rent</Text>
                                                             <CheckboxFormX 
                                                             dataSource={this.priceRentData}
-                                                            style = {{ padding: 5, margin: 0 , fontSize : 50}}
+                                                            style = {{ padding: 5, margin: 0 , fontSize : 50 }}
                                                             itemShowKey="label"
                                                             itemCheckedKey="RNchecked"
                                                             iconSize={27}
                                                             iconColor='#CC4F4F'
                                                             formHorizontal={false}
                                                             labelHorizontal={true}
-                                                            onChecked={(item) => this._onSelect(item)}
+                                                            onChecked={(item) => this._onPriceSelect(item)}
                                                             />
                                                         </View>
                                                         <View style = {styles.priceOutRight}>
                                                             <Text style = {{ fontSize: 20, marginTop: 10, marginBottom: 10 }}>Outright</Text>
                                                             <CheckboxFormX 
                                                             dataSource={this.priceOutrightData}
-                                                            style = {{ padding: 5, margin: 0 , fontSize : 50}}
+                                                            style = {{ padding: 5, margin: 0 , fontSize : 50 }}
                                                             itemShowKey="label"
                                                             itemCheckedKey="RNchecked"
                                                             iconSize={27}
                                                             iconColor='#CC4F4F'
                                                             formHorizontal={false}
                                                             labelHorizontal={true}
-                                                            onChecked={(item) => this._onSelect(item)}
+                                                            onChecked={(item) => this._onPriceSelect(item)}
                                                             />
                                                         </View>
-
                                                         </View>
                                                     </DialogContent>
                                             </Dialog>
@@ -568,5 +677,13 @@ const styles = StyleSheet.create ({
         marginTop:10,
     },
 });
+
+const mapStateToProps = (state) => {
+    return {
+        listings: state.listings
+    };
+};
+
+export default connect(mapStateToProps)(Filters);
 
 AppRegistry.registerComponent('Filters', () =>  Filters);

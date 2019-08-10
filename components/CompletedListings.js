@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View, StyleSheet, AppRegistry, Image} from 'react-native';
 import { Link } from "react-router-native";
+import Listings from './Listings';
 
 export default class CompletedListings extends Component {
     render(){
@@ -21,7 +22,9 @@ export default class CompletedListings extends Component {
                     <Text>Search Through Completed Deals :</Text>
                </View>
 
-               
+               <View>
+                   <Listings />
+               </View>
             </View>
         );
     }
