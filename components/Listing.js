@@ -10,7 +10,23 @@ export class Listing extends Component {
 
     render() {
 
-        const {dispatch, id, name, need, price, agency, contact} = this.props;
+        const { 
+            dispatch, 
+            id, 
+            name,
+            need,
+            type,
+            price,
+            carpetArea,
+            agency,
+            partyName,
+            contact,
+            email,
+            completed,
+            createdAt,
+            startDate,
+            endDate,
+            onTheWeb} = this.props;
 
         return (
             <View style={styles.Container}>
@@ -21,6 +37,12 @@ export class Listing extends Component {
                         <Text>{price}</Text>
                         <Text>{agency}</Text>
                         <Text>{contact}</Text>
+                        <Text>{type}</Text>
+                        <Text>{carpetArea}</Text>
+                        <Text>{partyName}</Text>
+                        <Text>{email}</Text>
+                        <Text>{completed}</Text>
+                        <Text>{onTheWeb}</Text>
                     </View>
                     <TouchableOpacity>
                         <Button title="X" onPress={() => dispatch(removeListing({ id }))} />

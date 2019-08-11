@@ -1,39 +1,51 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, AppRegistry, TextInput} from 'react-native';
+import {Text, View, StyleSheet, AppRegistry, TextInput, TouchableOpacity, Button} from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
 import { Link } from "react-router-native";
 import CheckboxFormX from 'react-native-checkbox-form';
+import { addListing } from '../actions/listings';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
-
-export default class AddListing extends Component {
+export class AddListing extends Component {
 
     constructor(props) {
         super(props);
         this.state = { 
             ListName: '',
+            need: '',
+            type: '',
             priceRange: '',
             area: '',
+            agency: '',
             mail : '',
             contact : '',
             partyname : '',
             value: 0,
+            onTheWeb: false
         };
 
       }
 
       radio_props = [
-        {label: 'Direct', value: 0 },
-        {label: 'E.A', value: 1 }
+        {
+            label: 'Direct', 
+            value: 0 
+        },
+        {
+            label: 'E.A',
+            value: 1 
+        }
       ];
 
-      price_props = [
-          {label : 'Rent', value : 0},
-          {label :  'Outright', value : 1}
-      ];
+    //   price_props = [
+    //       {label : 'Rent', value : 0},
+    //       {label :  'Outright', value : 1}
+    //   ];
 
       need_props = [
-        {label : 'To Rent', value : 0},
-        {label :  'For Rent', value : 1},
+        {label : 'Rent Enquiry', value : 0},
+        {label :  'Available for Rent', value : 1},
         {label : 'Sell', value : 2},
         {label: 'Buy', value : 3}
     ];
@@ -41,35 +53,35 @@ export default class AddListing extends Component {
      typeData1 = [
         {
             label: '1 RK',
-            value: 'one rk',
+            value: '1RK',
             RNchecked : false,
 
         },
         {
             label: '1 BHK',
-            value: 'one bhk',
+            value: '1BHK',
             RNchecked : false,
         },
         {
             label: '2 BHK',
-            value: 'two bhk',
+            value: '2BHK',
             RNchecked : false,
 
         },
         {
             label: '2 & 1/2 BHK',
-            value: 'two and half BHK',
+            value: '2.5BHK',
             RNchecked : false,
         },
 
         {
             label: '3 BHK',
-            value: 'three bhk',
+            value: '3BHK',
             RNchecked : false,
         },
         {
             label: '4 BHK',
-            value: 'four bhk',
+            value: '4BHK',
             RNchecked : false,
         },
         
@@ -83,8 +95,8 @@ export default class AddListing extends Component {
             RNchecked : false,
         },
         {
-            label: 'Row House',
-            value: 'Row House',
+            label: 'Rowhouse',
+            value: 'Rowhouse',
             RNchecked : false,
         },
         {
@@ -105,17 +117,16 @@ export default class AddListing extends Component {
     ];
 
  
-
-    
     _onSelect = ( item ) => {
         console.log(item);
       };
   
-
     
     render(){
+
+        const { dispatch } = this.props;
+
         return (
-        
             <View>
                <View style = {styles.Heading}>
                    <View style = {styles.Titles}>
@@ -174,23 +185,20 @@ export default class AddListing extends Component {
                         </View>
                         <View style= {styles.typeStyle}>
                             <View style = {styles.type1}>
-                                    <CheckboxFormX
-                        
-                        dataSource={this.typeData1}
-                        itemShowKey="label"
-                        itemCheckedKey="RNchecked"
-                        iconSize={20}
-                        iconColor='#CC4F4F'
-                        formHorizontal={false}
-                        labelHorizontal={true}
-                        onChecked={(item) => this._onSelect(item)}
-                    />
+                            <CheckboxFormX
+                            dataSource={this.typeData1}
+                            itemShowKey="label"
+                            itemCheckedKey="RNchecked"
+                            iconSize={20}
+                            iconColor='#CC4F4F'
+                            formHorizontal={false}
+                            labelHorizontal={true}
+                            onChecked={(item) => this._onSelect(item)}
+                            />
                           </View>
                           <View style = {styles.type2}>  
-                                    <CheckboxFormX
-                            
+                            <CheckboxFormX
                             dataSource={this.typeData2}
-                            
                             itemShowKey="label"
                             itemCheckedKey="RNchecked"
                             iconSize={20}
@@ -212,9 +220,9 @@ export default class AddListing extends Component {
                     <View style = {styles.STitles}>
                         <View style = {styles.AgencyFlex}>
                             <View style = {styles.Agency}>
-                                <Text style = {styles.HeadStyle}> PRICE RANGE :</Text> 
+                                <Text style = {styles.HeadStyle}>PRICE :</Text> 
                             </View>
-                            <View style = {styles.AgencyEntry}>
+                            {/* <View style = {styles.AgencyEntry}>
                                 <RadioForm
                                 radio_props={this.price_props}
                                 initial={-1}
@@ -225,7 +233,7 @@ export default class AddListing extends Component {
                                 buttonSize = {12}
                                 onPress={(value) => {this.setState({ value })}}
                                 />
-                            </View>
+                            </View> */}
                         </View>
                         
                         <View style = {{marginTop : 5}}>
@@ -238,7 +246,7 @@ export default class AddListing extends Component {
 
 
                     <View style = {styles.STitles}>
-                        <Text style = {styles.HeadStyle}> CARPET AREA</Text>
+                        <Text style = {styles.HeadStyle}>CARPET AREA :</Text>
                         <View style = {{marginTop : 5}}>
                         <TextInput 
                         style = {{borderColor: '#009EFD', borderWidth: 1}}
@@ -252,7 +260,7 @@ export default class AddListing extends Component {
                         
                         <View style = {styles.AgencyFlex}>
                             <View style = {styles.Agency}>
-                                <Text style = {styles.HeadStyle}> AGENCY : </Text>
+                                <Text style = {styles.HeadStyle}>AGENCY :</Text>
                             </View>
                             <View style = {styles.AgencyEntry}>
                                 <RadioForm
@@ -271,7 +279,7 @@ export default class AddListing extends Component {
                     
                         <View style = {styles.AgencyFlex}>
                             <View style = {styles.Agency}>
-                                <Text style = {styles.HeadStyle}> PARTY NAME : </Text>
+                                <Text style = {styles.HeadStyle}>PARTY NAME :</Text>
                             </View>
                             <View style = {styles.AgencyEntry}>
                                 <TextInput 
@@ -283,7 +291,7 @@ export default class AddListing extends Component {
 
                         <View style = {styles.AgencyFlex}>
                             <View style = {styles.Agency}>
-                                <Text style = {styles.HeadStyle}> CONTACT : </Text>
+                                <Text style = {styles.HeadStyle}>CONTACT : </Text>
                             </View>
                             <View style = {styles.AgencyEntry}>
                                 <TextInput 
@@ -296,7 +304,7 @@ export default class AddListing extends Component {
 
                         <View style = {styles.AgencyFlex}>
                             <View style = {styles.Agency}>
-                                <Text style = {styles.HeadStyle} > EMAIL : </Text>
+                                <Text style = {styles.HeadStyle} >EMAIL : </Text>
                             </View>
                             <View style = {styles.AgencyEntry}>
                                 <TextInput 
@@ -307,6 +315,32 @@ export default class AddListing extends Component {
                             </View>
                         </View>
                     
+                    </View>
+
+                    <View style= {{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <TouchableOpacity style={styles.ButtonEffects}>
+                            <Button 
+                            title = "SAVE LISTING"
+                            color = '#000'
+                            accessibilityLabel = 'Save Listing' 
+                            onPress = {() => dispatch(addListing({
+                                name: this.state.ListName,
+                                need: this.state.need,
+                                type: this.state.type,
+                                price: this.state.priceRange,
+                                carpetArea: this.state.area,
+                                agency: this.state.agency,
+                                partyName: this.state.partyname,
+                                contact: this.state.contact,
+                                email: this.state.mail,
+                                completed: false,
+                                createdAt: moment(),
+                                startDate: moment(),
+                                endDate: moment(),
+                                onTheWeb: false
+                            }))}
+                            />
+                        </TouchableOpacity>
                     </View>
 
                </View>
@@ -439,8 +473,20 @@ const styles = StyleSheet.create({
   
     },
   
+    ButtonEffects : {
+        width: 200,
+        backgroundColor: '#fff',
+        borderWidth : 1,
+        borderColor : '#e3eff0',
+        borderRadius : 5,
+        fontSize : 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
 
 
 })
+
+export default connect()(AddListing);
 
 AppRegistry.registerComponent('AddListing', () => AddListing);
