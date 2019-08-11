@@ -577,9 +577,25 @@ export class Filters extends Component {
                                                 }}>
                                                     <DialogContent>
                                                     <View style = {styles.DialogContainer}>
-                                                        <View style = {styles.DialogOpt}>
+                                                        <View style = {styles.DialogOpt1}>
+                                                        <Text style= {styles.carpetAreaStyle}>Min value</Text>
+                                                        <TextInput 
+                                                        style = {{borderColor: '#009EFD', borderWidth: 1}}
+                                                        onChangeText={(areaMin) => this.setState({areaMin})}
+                                                        value={this.state.areaMin}
+                                                        keyboardType='number-pad'/>
+                                                        
+                                                        <View style = {styles.DialogOpt2}>
+                                                        <Text style= {styles.carpetAreaStyle}>Max value</Text>
+                                                        <TextInput 
+                                                        style = {{borderColor: '#009EFD', borderWidth: 1}}
+                                                        onChangeText={(areaMax) => this.setState({areaMax})}
+                                                        value={this.state.areaMax}
+                                                        keyboardType='number-pad'/> 
                                                         </View>
                                                         </View>
+                                                        
+                                                    </View>
                                                     </DialogContent>
                                             </Dialog>
                                         </View>
@@ -642,6 +658,25 @@ const styles = StyleSheet.create ({
     DialogOpt: {
         marginTop: 25,
         flex: 1,
+    },
+    
+    DialogOpt1:{
+        marginTop:40,
+        flexDirection: 'column',
+        flex:1,
+        padding:10,
+    },
+
+    DialogOpt2:{
+        marginTop: 35,
+        flex:1,
+      
+    },
+    
+    carpetAreaStyle:
+    {
+        fontWeight:'bold',
+        fontSize:15,
     },
 
     DialogDropdown: {
